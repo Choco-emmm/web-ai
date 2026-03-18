@@ -41,29 +41,28 @@ public class EmpServiceImpl implements EmpService {
         List<Emp> list = empMapper.list(empQueryParam);
 
         Page<Emp> p = (Page<Emp>) list;
-        return new PageResult<Emp>(p.getTotal(),p.getResult());
+        return new PageResult<Emp>(p.getTotal(), p.getResult());
     }
 
 
     @Transactional//事务管理
     @Override
     public void add(Emp emp) {
-        try {
-            emp.setCreateTime(LocalDateTime.now());
-            emp.setUpdateTime(LocalDateTime.now());
-            empMapper.add(emp);
+        emp.setCreateTime(LocalDateTime.now());
+        emp.setUpdateTime(LocalDateTime.now());
+        empMapper.add(emp);
 
-            List<EmpExpr> exprList = emp.getExprList();
-            if(!CollectionUtils.isEmpty(exprList)){
-               exprList.forEach(empExpr -> {
-                   empExpr.setEmpId(emp.getId());
-               });
-                   empExprMapper.add(exprList);
-            }
-        } finally {
-            // 记录日志
-            empLogService.insertLog(new EmpLog(null, LocalDateTime.now(), emp.toString()));
+        // 新增员工工作经历
+        List<EmpExpr> exprList = emp.getExprList();
+        if (!CollectionUtils.isEmpty(exprList)) {
+            exprList.forEach(empExpr -> {
+                empExpr.setEmpId(emp.getId());
+            });
+            empExprMapper.add(exprList);
         }
+
+        // 记录日志
+        empLogService.insertLog(new EmpLog(null, LocalDateTime.now(), emp.toString()));
 
 
     }
