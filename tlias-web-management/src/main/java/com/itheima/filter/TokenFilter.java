@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
-@WebFilter("/*")
+//@WebFilter("/*")
 @Slf4j
 public class TokenFilter implements Filter {
     @Override
